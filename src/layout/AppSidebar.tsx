@@ -24,12 +24,29 @@ import {
   Receipt,
   TrendingUp,
   Users,
+  User,
+  UserCog,
+  Clock,
+  History,
+  Wallet,
+  PieChart,
+  Search,
+  CalendarDays,
+  CheckCircle,
+  BookOpen,
+  UserCircle,
 } from "lucide-react";
+
+
+import {
+  useAuthContext,
+} from "~/context/AuthContext";
 
 type SubItem = {
   name: string;
   icon: React.ReactNode;
   path: string;
+  roles: string[]; // Array of roles that can access this item
   pro?: boolean;
   new?: boolean;
 };
@@ -37,130 +54,370 @@ type SubItem = {
 type NavItem = {
   name: string;
   icon: React.ReactNode;
+  roles: string[]; // Array of roles that can access this item
   path?: string;
   subItems?: SubItem[];
 };
 
+
+
 const navItems: NavItem[] = [
-  // Dashboard
+
+  // ─────────────────────────────────────────
+  // ADMIN
+  // ─────────────────────────────────────────
+
   {
     name: "Dashboard",
     icon: <LayoutDashboard />,
+    roles: ["admin"],
     path: "/dashboard",
   },
-
-  // Salon Management
   {
     name: "Salon Management",
     icon: <Store />,
-    path: "/admin/salons",
+    roles: ["admin"],
     subItems: [
       {
-        name: "All SalonList",
+        name: "All Salons",
         icon: <List />,
+        roles: ["admin"],
         path: "/salons",
       },
       {
         name: "Add Salon",
         icon: <Plus />,
+        roles: ["admin"],
         path: "/salons/create",
       },
     ],
   },
-
-  // Service Management
   {
     name: "Service Management",
     icon: <Scissors />,
-    path: "/services",
+    roles: ["admin"],
     subItems: [
       {
         name: "Services Master",
         icon: <ClipboardList />,
+        roles: ["admin"],
         path: "/services",
       },
       {
         name: "Add Service",
         icon: <Plus />,
+        roles: ["admin"],
         path: "/services/create",
       },
     ],
   },
-
-  // Booking Management
   {
     name: "Booking Management",
     icon: <CalendarCheck />,
+    roles: ["admin"],
     path: "/bookings",
-    subItems: [
-      {
-        name: "All Bookings",
-        icon: <List />,
-        path: "/bookings",
-      },
-      {
-        name: "Booking Details",
-        icon: <ClipboardList />,
-        path: "/bookings/details",
-      },
-    ],
   },
-
-  // Transactions & Payments
   {
     name: "Transactions & Payments",
     icon: <CreditCard />,
-    path: "/transactions",
+    roles: ["admin"],
     subItems: [
       {
         name: "Transactions",
         icon: <Receipt />,
+        roles: ["admin"],
         path: "/transactions",
       },
       {
         name: "Revenue Overview",
         icon: <TrendingUp />,
+        roles: ["admin"],
         path: "/transactions/revenue",
       },
     ],
   },
-
-  // Reports & Analytics
   {
     name: "Reports & Analytics",
     icon: <BarChart3 />,
-    path: "/reports",
+    roles: ["admin"],
     subItems: [
       {
         name: "Salon Report",
         icon: <Store />,
+        roles: ["admin"],
         path: "/reports/salons",
       },
       {
         name: "Service Report",
         icon: <Scissors />,
+        roles: ["admin"],
         path: "/reports/services",
       },
       {
         name: "Customer Report",
         icon: <Users />,
+        roles: ["admin"],
         path: "/reports/customers",
       },
     ],
   },
-
-  // Settings
   {
     name: "Settings",
     icon: <Settings />,
+    roles: ["admin"],
     path: "/settings",
+  },
 
+  // ─────────────────────────────────────────
+  // OWNER
+  // ─────────────────────────────────────────
+
+  {
+    name: "Dashboard",
+    icon: <LayoutDashboard />,
+    roles: ["owner"],
+    path: "/owner/dashboard",
+  },
+  {
+    name: "Services & Pricing",
+    icon: <Scissors />,
+    roles: ["owner"],
+    path: "/salon-services",
+  },
+  {
+    name: "Staff Management",
+    icon: <UserCog />,
+    roles: ["owner"],
+    subItems: [
+      {
+        name: "Barber List",
+        icon: <List />,
+        roles: ["owner"],
+        path: "/barbers",
+      },
+      {
+        name: "Add Barber",
+        icon: <Plus />,
+        roles: ["owner"],
+        path: "/barbers/create",
+      },
+
+    ],
+  },
+  {
+    name: "Appointments",
+    icon: <CalendarCheck />,
+    roles: ["owner"],
+    subItems: [
+      {
+        name: "Appointment List",
+        icon: <List />,
+        roles: ["owner"],
+        path: "/owner/appointments",
+      },
+      {
+        name: "Appointment Detail",
+        icon: <BookOpen />,
+        roles: ["owner"],
+        path: "/owner/appointments/detail",
+      },
+      {
+        name: "Appointment History",
+        icon: <History />,
+        roles: ["owner"],
+        path: "/owner/appointments/history",
+      },
+    ],
+  },
+  {
+    name: "Payments & Commission",
+    icon: <Wallet />,
+    roles: ["owner"],
+    subItems: [
+      {
+        name: "Payment History",
+        icon: <Receipt />,
+        roles: ["owner"],
+        path: "/owner/payments",
+      },
+      {
+        name: "Earnings Dashboard",
+        icon: <TrendingUp />,
+        roles: ["owner"],
+        path: "/owner/payments/earnings",
+      },
+      {
+        name: "Commission Breakdown",
+        icon: <PieChart />,
+        roles: ["owner"],
+        path: "/owner/payments/commission",
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────
+  // CUSTOMER
+  // ─────────────────────────────────────────
+
+  {
+    name: "Explore Salons",
+    icon: <Search />,
+    roles: ["customer"],
+    subItems: [
+      {
+        name: "Home / Explore",
+        icon: <LayoutDashboard />,
+        roles: ["customer"],
+        path: "/explore",
+      },
+      {
+        name: "Salon Listing",
+        icon: <List />,
+        roles: ["customer"],
+        path: "/explore/salons",
+      },
+      {
+        name: "Salon Detail",
+        icon: <Store />,
+        roles: ["customer"],
+        path: "/explore/salons/detail",
+      },
+    ],
+  },
+  {
+    name: "Book Appointment",
+    icon: <CalendarDays />,
+    roles: ["customer"],
+    subItems: [
+      {
+        name: "Select Services",
+        icon: <Scissors />,
+        roles: ["customer"],
+        path: "/book/services",
+      },
+      {
+        name: "Select Barber",
+        icon: <UserCog />,
+        roles: ["customer"],
+        path: "/book/barber",
+      },
+      {
+        name: "Select Slot",
+        icon: <Clock />,
+        roles: ["customer"],
+        path: "/book/slots",
+      },
+      {
+        name: "Payment",
+        icon: <CreditCard />,
+        roles: ["customer"],
+        path: "/book/payment",
+      },
+      {
+        name: "Confirmation",
+        icon: <CheckCircle />,
+        roles: ["customer"],
+        path: "/book/confirmation",
+      },
+    ],
+  },
+  {
+    name: "My Bookings",
+    icon: <BookOpen />,
+    roles: ["customer"],
+    subItems: [
+      {
+        name: "Upcoming",
+        icon: <CalendarCheck />,
+        roles: ["customer"],
+        path: "/bookings/upcoming",
+      },
+      {
+        name: "History",
+        icon: <History />,
+        roles: ["customer"],
+        path: "/bookings/history",
+      },
+    ],
+  },
+  {
+    name: "Profile",
+    icon: <UserCircle />,
+    roles: ["customer"],
+    subItems: [
+      {
+        name: "View Profile",
+        icon: <User />,
+        roles: ["customer"],
+        path: "/profile",
+      },
+      {
+        name: "Edit Profile",
+        icon: <Settings />,
+        roles: ["customer"],
+        path: "/profile/edit",
+      },
+    ],
   },
 ];
 
 const othersItems: NavItem[] = [];
 
 const AppSidebar: React.FC = () => {
+
+  const {
+    user,
+  } = useAuthContext();
+
+  const currentRole =
+    user?.role;
+
+
+  const filteredNavItems =
+    navItems
+
+      .map((item) => ({
+
+        ...item,
+
+        subItems:
+          item.subItems?.filter(
+            (subItem) =>
+
+              subItem.roles?.includes(
+                currentRole as any
+              )
+          ),
+      }))
+
+      .filter((item) => {
+
+        //
+        // MAIN ITEM ACCESS
+        //
+
+        const hasMainAccess =
+          item.roles?.includes(
+            currentRole as any
+          );
+
+        //
+        // SUBITEM ACCESS
+        //
+
+        const hasSubItems =
+          item.subItems &&
+          item.subItems.length > 0;
+
+        return (
+          hasMainAccess ||
+          hasSubItems
+        );
+      });
+
+  console.log('---', filteredNavItems);
+
+
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
 
@@ -182,7 +439,7 @@ const AppSidebar: React.FC = () => {
   useEffect(() => {
     let submenuMatched = false;
     ["main", "others"].forEach((menuType) => {
-      const items = menuType === "main" ? navItems : othersItems;
+      const items = menuType === "main" ? filteredNavItems : othersItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
           nav.subItems.forEach((subItem) => {
@@ -412,7 +669,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots className="size-6" />
                 )}
               </h2>
-              {renderMenuItems(navItems, "main")}
+              {renderMenuItems(filteredNavItems, "main")}
             </div>
             <div className="">
               <h2

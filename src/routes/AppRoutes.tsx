@@ -9,6 +9,10 @@ import BookingRoutes from "~/pages/Booking";
 import SettingsRoutes from "~/pages/Setting";
 import SalonServicesRoutes from "~/pages/SalonServices";
 import BarberRoutes from "~/pages/Barbers";
+import FavouriteSalonsList from "~/pages/FavouriteSalons/FavouriteSalonsList";
+import ExploreSalonsRoutes from "~/pages/Explore-Salons";
+import PaymentPage from "~/pages/Explore-Salons/Booking/PaymentPage";
+import MyBookingRoutes from "~/pages/MyBookings";
 /* AUTH */
 const Login = lazy(() => import("../pages/Auth/Login"));
 
@@ -31,6 +35,12 @@ export default function AppRoutes() {
                     //owner services
                     <Route path='/salon-services/*' element={<SalonServicesRoutes />} />
                     <Route path='/barbers/*' element={<BarberRoutes />} />
+
+                    //customer routes
+                    <Route path="/explore-salons/*" element={<ExploreSalonsRoutes />} />
+                    <Route path="/favourites/*" element={<FavouriteSalonsList />} />
+                    <Route path="/payment" element={<PaymentPage />} />
+                    <Route path="/my-bookings/*" element={<MyBookingRoutes />} />
                 </Route>
 
                 <Route path="*" element={<NotFound />} />

@@ -31,10 +31,9 @@ import {
   Wallet,
   PieChart,
   Search,
-  CalendarDays,
-  CheckCircle,
   BookOpen,
   UserCircle,
+  Heart,
 } from "lucide-react";
 
 
@@ -263,102 +262,21 @@ const navItems: NavItem[] = [
     name: "Explore Salons",
     icon: <Search />,
     roles: ["customer"],
-    subItems: [
-      {
-        name: "Home / Explore",
-        icon: <LayoutDashboard />,
-        roles: ["customer"],
-        path: "/explore",
-      },
-      {
-        name: "Salon Listing",
-        icon: <List />,
-        roles: ["customer"],
-        path: "/explore/salons",
-      },
-      {
-        name: "Salon Detail",
-        icon: <Store />,
-        roles: ["customer"],
-        path: "/explore/salons/detail",
-      },
-    ],
+    path: "/explore-salons",
   },
   {
-    name: "Book Appointment",
-    icon: <CalendarDays />,
+    name: "My Favourites",
+    icon: <Heart />,
     roles: ["customer"],
-    subItems: [
-      {
-        name: "Select Services",
-        icon: <Scissors />,
-        roles: ["customer"],
-        path: "/book/services",
-      },
-      {
-        name: "Select Barber",
-        icon: <UserCog />,
-        roles: ["customer"],
-        path: "/book/barber",
-      },
-      {
-        name: "Select Slot",
-        icon: <Clock />,
-        roles: ["customer"],
-        path: "/book/slots",
-      },
-      {
-        name: "Payment",
-        icon: <CreditCard />,
-        roles: ["customer"],
-        path: "/book/payment",
-      },
-      {
-        name: "Confirmation",
-        icon: <CheckCircle />,
-        roles: ["customer"],
-        path: "/book/confirmation",
-      },
-    ],
+    path: "/favourites",
   },
   {
     name: "My Bookings",
-    icon: <BookOpen />,
+    icon: <CalendarCheck />,
     roles: ["customer"],
-    subItems: [
-      {
-        name: "Upcoming",
-        icon: <CalendarCheck />,
-        roles: ["customer"],
-        path: "/bookings/upcoming",
-      },
-      {
-        name: "History",
-        icon: <History />,
-        roles: ["customer"],
-        path: "/bookings/history",
-      },
-    ],
-  },
-  {
-    name: "Profile",
-    icon: <UserCircle />,
-    roles: ["customer"],
-    subItems: [
-      {
-        name: "View Profile",
-        icon: <User />,
-        roles: ["customer"],
-        path: "/profile",
-      },
-      {
-        name: "Edit Profile",
-        icon: <Settings />,
-        roles: ["customer"],
-        path: "/profile/edit",
-      },
-    ],
-  },
+    path: "/my-bookings",
+  }
+
 ];
 
 const othersItems: NavItem[] = [];
@@ -414,9 +332,6 @@ const AppSidebar: React.FC = () => {
           hasSubItems
         );
       });
-
-  console.log('---', filteredNavItems);
-
 
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();

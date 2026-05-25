@@ -119,6 +119,7 @@ export function useBookings() {
                     await getBookings(
                         params
                     );
+                console.log("Bookings fetch response:-------", res.data);
 
                 setBookings(
                     res.data
@@ -127,7 +128,7 @@ export function useBookings() {
                 setTotal(
                     res.total
                 );
-
+                console.log("Total bookings:", res.data.pagination.total);
             } catch (error) {
 
                 console.error(error);
